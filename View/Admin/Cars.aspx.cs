@@ -65,14 +65,16 @@ namespace WebAppCRMS.View.Admin
                 {
                     con.Open();
                 }
-                string insertcmd = "insert into Car_details values (@cno,@brand,@model,@price,@color,@status)";
-                SqlCommand cmd = new SqlCommand(insertcmd, con);
-                cmd.Parameters.AddWithValue("@cno", cno);
-                cmd.Parameters.AddWithValue("@brand", brand);
-                cmd.Parameters.AddWithValue("@model", model);
-                cmd.Parameters.AddWithValue("@price", price);
-                cmd.Parameters.AddWithValue("@color", color);
-                cmd.Parameters.AddWithValue("@status", status);
+
+                SqlCommand cmd = new SqlCommand("sp_addcar", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@CPlateNum", cno);
+                cmd.Parameters.AddWithValue("@Brand", brand);
+                cmd.Parameters.AddWithValue("@Model", model);
+                cmd.Parameters.AddWithValue("@Price", price);
+                cmd.Parameters.AddWithValue("@Color", color);
+                cmd.Parameters.AddWithValue("@Cstatus", status);
 
                 int x = cmd.ExecuteNonQuery();
                 if (x > 0)
@@ -117,9 +119,10 @@ namespace WebAppCRMS.View.Admin
                 {
                     con.Open();
                 }
-                string deletecmd = "delete from Car_details where CPlateNum=@cno";
-                SqlCommand cmd = new SqlCommand(deletecmd, con);
-                cmd.Parameters.AddWithValue("@cno", cno);
+                SqlCommand cmd = new SqlCommand("sp_deletecar", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@CPlateNum", cno);
 
                 int x = cmd.ExecuteNonQuery();
                 if (x > 0)
@@ -158,15 +161,17 @@ namespace WebAppCRMS.View.Admin
                 {
                     con.Open();
                 }
-                string editcmd = "update car_details set CPlateNum=@cno,brand=@brand,model=@model,price=@price,color=@color,cstatus=@status where CPlateNum=@originalCno";
-                SqlCommand cmd = new SqlCommand(editcmd, con);
-                cmd.Parameters.AddWithValue("@cno", cno);
-                cmd.Parameters.AddWithValue("@brand", brand);
-                cmd.Parameters.AddWithValue("@model", model);
-                cmd.Parameters.AddWithValue("@price", price);
-                cmd.Parameters.AddWithValue("@color", color);
-                cmd.Parameters.AddWithValue("@status", status);
-                cmd.Parameters.AddWithValue("@originalCno", originalCno);
+
+                SqlCommand cmd = new SqlCommand("sp_updatecar", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@OriginalCPlateNum", originalCno);
+                cmd.Parameters.AddWithValue("@CPlateNum", cno);
+                cmd.Parameters.AddWithValue("@Brand", brand);
+                cmd.Parameters.AddWithValue("@Model", model);
+                cmd.Parameters.AddWithValue("@Price", price);
+                cmd.Parameters.AddWithValue("@Color", color);
+                cmd.Parameters.AddWithValue("@Cstatus", status);
 
                 int x = cmd.ExecuteNonQuery();
                 if (x > 0)

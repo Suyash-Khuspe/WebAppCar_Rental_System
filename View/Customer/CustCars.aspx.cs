@@ -41,23 +41,18 @@ namespace WebAppCRMS.View.Customer
         }
         private void UpdateCar(string lno)
         {
+            using (SqlConnection con = GetConnection())
             {
-                
-                SqlConnection con = GetConnection();
-                if (con.State != ConnectionState.Open)
-                {
-                    con.Open();
-                }
-                string status = "Booked";
-                string updatecmd = "update car_details set Cstatus=@status where CPlateNum=@LicenseNumber";
-                SqlCommand cmd = new SqlCommand(updatecmd, con);
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_updateCarStatusCust", con);
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("@status", status);
-                cmd.Parameters.AddWithValue("@LicenseNumber", lno);
+                cmd.Parameters.AddWithValue("@CPlateNum", lno);
+
                 cmd.ExecuteNonQuery();
-                con.Close();
             }
         }
+
 
         protected void btnbook_Click(object sender, EventArgs e)
         {
@@ -99,8 +94,8 @@ namespace WebAppCRMS.View.Customer
                         {
                             con.Open();
                         }
-                        string insertcmd = "insert into Rent (Car, Customer, Rentdate, Returndate, Fees) values (@Car, @Customer, @Rentdate, @Returndate, @Fees)";
-                        SqlCommand cmd = new SqlCommand(insertcmd, con);
+                        SqlCommand cmd = new SqlCommand("sp_addRent", con);
+                        cmd.CommandType = CommandType.StoredProcedure;
 
                         cmd.Parameters.AddWithValue("@Car", LNoTB);
                         cmd.Parameters.AddWithValue("@Customer", Customer);

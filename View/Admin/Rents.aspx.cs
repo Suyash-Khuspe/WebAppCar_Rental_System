@@ -84,51 +84,49 @@ namespace WebAppCRMS.View.Admin
             using (SqlConnection con = GetConnection())
             {
                 con.Open();
-                string insertCmd = "INSERT INTO CReturn (RentId, Car, Customer, RDate, CDelay, Fine) VALUES (@RentId, @Car, @Customer, @Rentdate, @delay, @fine)";
+                SqlCommand cmd = new SqlCommand("sp_addCarReturn", con);
+                cmd.CommandType = CommandType.StoredProcedure;
 
+                cmd.Parameters.AddWithValue("@RentId", rentid);
+                cmd.Parameters.AddWithValue("@Car", licensePlate);
+                cmd.Parameters.AddWithValue("@Customer", customerId);
+                cmd.Parameters.AddWithValue("@Rentdate", rentDate);
+                cmd.Parameters.AddWithValue("@Delay", delay);
+                cmd.Parameters.AddWithValue("@Fine", fine);
 
-                using (SqlCommand cmd = new SqlCommand(insertCmd, con))
-                {
-                    cmd.Parameters.AddWithValue("@RentId", rentid);
-                    cmd.Parameters.AddWithValue("@Car", licensePlate);
-                    cmd.Parameters.AddWithValue("@Customer", customerId);
-                    cmd.Parameters.AddWithValue("@Rentdate", rentDate);
-                    cmd.Parameters.AddWithValue("@Delay", delay);
-                    cmd.Parameters.AddWithValue("@Fine", fine);
-
-                    cmd.ExecuteNonQuery();
-                }
+                cmd.ExecuteNonQuery();
             }
         }
+
 
         private void UpdateCarStatus(string licensePlate)
         {
             using (SqlConnection con = GetConnection())
             {
                 con.Open();
-                string updateCmd = "UPDATE Car_details SET Cstatus = 'Available' WHERE CPlateNum = @LicenseNumber";
+                SqlCommand cmd = new SqlCommand("sp_updateCarStatus", con);
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                using (SqlCommand cmd = new SqlCommand(updateCmd, con))
-                {
-                    cmd.Parameters.AddWithValue("@LicenseNumber", licensePlate);
-                    cmd.ExecuteNonQuery();
-                }
+                cmd.Parameters.AddWithValue("@CPlateNum", licensePlate);
+
+                cmd.ExecuteNonQuery();
             }
         }
+
 
         private void DeleteRentRecord(int rentid)
         {
             using (SqlConnection con = GetConnection())
             {
                 con.Open();
-                string deleteRentCmd = "DELETE FROM Rent WHERE RentId = @rentid";
-                using (SqlCommand cmd = new SqlCommand(deleteRentCmd, con))
-                {
-                    cmd.Parameters.AddWithValue("@rentid", rentid);
-                    cmd.ExecuteNonQuery();
+                SqlCommand cmd = new SqlCommand("sp_deleteRent", con);
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                }
+                cmd.Parameters.AddWithValue("@RentId", rentid);
+
+                cmd.ExecuteNonQuery();
             }
         }
+
     }
 }

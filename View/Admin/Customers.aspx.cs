@@ -62,12 +62,14 @@ namespace WebAppCRMS.View.Admin
                 {
                     con.Open();
                 }
-                string insertcmd = "insert into customer values (@cname,@add,@phone,@pass)";
-                SqlCommand cmd = new SqlCommand(insertcmd, con);
-                cmd.Parameters.AddWithValue("@cname", cname);
-                cmd.Parameters.AddWithValue("@add", add);
-                cmd.Parameters.AddWithValue("@phone", phone);
-                cmd.Parameters.AddWithValue("@pass", pass);
+                SqlCommand cmd = new SqlCommand("sp_addcustomer", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@CustName", cname);
+                cmd.Parameters.AddWithValue("@CustAdd", add);
+                cmd.Parameters.AddWithValue("@CustPhone", phone);
+                cmd.Parameters.AddWithValue("@CustPassword", pass);
+
                 int x = cmd.ExecuteNonQuery();
                 if (x > 0)
                 {
@@ -108,15 +110,17 @@ namespace WebAppCRMS.View.Admin
             }
             else
             {
-                key = Convert.ToInt32(custlist.SelectedRow.Cells[1].Text);
+               
+                int custid = Convert.ToInt32(custlist.SelectedRow.Cells[1].Text);
                 SqlConnection con = GetConnection();
                 if (con.State != ConnectionState.Open)
                 {
                     con.Open();
                 }
-                string deletecmd = "delete from Customer where custid=@cid";
-                SqlCommand cmd = new SqlCommand(deletecmd, con);
-                cmd.Parameters.AddWithValue("@cid", Convert.ToInt32(key));
+                SqlCommand cmd = new SqlCommand("sp_deletecustomer", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@Custid", custid);
 
                 int x = cmd.ExecuteNonQuery();
                 if (x > 0)
@@ -141,8 +145,7 @@ namespace WebAppCRMS.View.Admin
             }
             else
             {
-                string originalCid = custlist.SelectedRow.Cells[1].Text;
-
+                int custid = Convert.ToInt32(custlist.SelectedRow.Cells[1].Text);
                 string cname = CustNameTb.Text;
                 string add = AddTb.Text;
                 string phone = PhoneTb.Text;
@@ -153,13 +156,15 @@ namespace WebAppCRMS.View.Admin
                 {
                     con.Open();
                 }
-                string editcmd = "update customer set CustName=@cname,CustAdd=@add,CustPhone=@phone,CustPassword=@pass where Custid=@originalCid";
-                SqlCommand cmd = new SqlCommand(editcmd, con);
-                cmd.Parameters.AddWithValue("@cname", cname);
-                cmd.Parameters.AddWithValue("@add", add);
-                cmd.Parameters.AddWithValue("@phone", phone);
-                cmd.Parameters.AddWithValue("@pass", pass);
-                cmd.Parameters.AddWithValue("@originalCid", originalCid);
+
+                SqlCommand cmd = new SqlCommand("sp_updatecustomer", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@Custid", custid);
+                cmd.Parameters.AddWithValue("@CustName", cname);
+                cmd.Parameters.AddWithValue("@CustAdd", add);
+                cmd.Parameters.AddWithValue("@CustPhone", phone);
+                cmd.Parameters.AddWithValue("@CustPassword", pass);
 
                 int x = cmd.ExecuteNonQuery();
                 if (x > 0)
